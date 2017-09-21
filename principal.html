@@ -13,7 +13,27 @@
 
 <div class="row"> 
     <div class="row" style="margin:0; padding:0; margin-top:10px;">
+        <div class="col-md-3">
+            <label>Personagem</label>
+            <input type="text" id="nome" name="nome" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <label>Classe</label>
+            <select type="text" id="classe" name="classe" class="form-control">
+                <option value="1">Lutador</option>
+                <option value="2">Mecanico</option>
+                <option value="3">Arqueira</option>
+                <option value="4">Pikeman</option>
+                <option value="5">Atalanta</option>
+                <option value="6">Cavaleiro</option>                
+                <option value="7">Mago</option>                
+                <option value="8">Sacer</option>                
+            </select>
+        </div>
+    </div>
+    <div class="row" style="margin:0; padding:0; margin-top:10px;">
         <div class="col-md-4">
+                <button name="btnCriarPersonagem" id="btnCriarPersonagem" class="btn btn-success">Criar Personagens</button>
             <button name="btnListarTodos" id="btnListarTodos" class="btn btn-info">Listar Personagens</button>
             <button name="btnSair" id="btnSair" class="btn btn-danger">Sair</button>
         </div>
@@ -32,10 +52,10 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-    //Verificar autentic�o..
+    //Verificar autentic?o..
     Autenticado();
 
-    //Fun��o para carregar o HTML na tela..
+    //Fun??o para carregar o HTML na tela..
     MontarHTML = function() {
         //Pegando os dados..
         var json = Global.dados;
@@ -52,12 +72,13 @@ $(document).ready(function(){
         {
             var classeDIV = (!p) ? " active" : "";
             html += "<div role=\"tabpanel\" class=\"tab-pane"+classeDIV+"\" id="+p+" style='margin-top:10px;'>";
+                html += "<p><button name='btnRecriarPersonagem_"+json[p].Nickname+"' id='btnRecriarPersonagem_"+json[p].Nickname+"' class='btn btn-info' nome='"+json[p].Nickname+"' onclick='RecriarPersonagem(this);'>Recriar</button>&nbsp;<button name='btnExcluirPersonagem_"+json[p].Nickname+"' id='btnExcluirPersonagem_"+json[p].Nickname+"' class='btn btn-danger' nome='"+json[p].Nickname+"' onclick='ExcluirPersonagem(this);'>Excluir</button></p>"
                 html += "<p>Clan: "+json[p].Clan+"</p>";
                 html += "<p>Level: "+json[p].Level+"</p>";
                 html += "<p>Classe: <img src='assets/imgs/classes/"+json[p].NumeroClasse+".bmp'></p>";
                 html += "<p><b>Status:</b>";
                     html += "<ul>";
-                    html += "<li>For�a: "+json[p].Status.Forca+"</li>";                          
+                    html += "<li>For?a: "+json[p].Status.Forca+"</li>";                          
                     html += "<li>Inteligencia: "+json[p].Status.Inteligencia+"</li>";
                     html += "<li>Talento: "+json[p].Status.Talento+"</li>";
                     html += "<li>Agilidade: "+json[p].Status.Agilidade+"</li>";
@@ -121,15 +142,71 @@ $(document).ready(function(){
         $("#resultado").html(html);
     };
 
-    //Chamando m�todo para listar os personagens..
-    $("#btnListarTodos").click(function() {
-        //Chamando a fun��o para carregar os dados..
-        Carregar();
-        //Verificando e montando HTML..
-        (Global.dados) ? MontarHTML() : alert("N�o foi poss�vel carregar os dados.");
+    Resposta = function(msg) {
+        var cor = (msg.toLowerCase().indexOf("sucesso")>=0) ? "success" : "danger";
+        $("#resultado").html("<div class='alert alert-"+cor+"'>"+msg+"</div>");
+    };
+
+    //Chamandoo método para recriar o personagem..
+    RecriarPersonagem = function(campo) {
+        //Chamando a função para carregar os dados..
+        var Dados = {
+            Nome: $(campo).attr("nome")
+        };
+
+        //Chamando o método para excluir e repsonder na tela..
+        Recriar(Dados); Resposta(Global.dados);
+
+        //Chamando a função para carregar os dados..
+        setTimeout(function(){ $("#btnListarTodos").click(); }, 3000);
+    };     
+
+    //Chamandoo método para excluir o personagem..
+    ExcluirPersonagem = function(campo) {
+        //Chamando a função para carregar os dados..
+        var Dados = {
+            Nome: $(campo).attr("nome")
+        };
+
+        //Chamando o método para excluir e repsonder na tela..
+        Excluir(Dados); Resposta(Global.dados);
+
+        //Chamando a função para carregar os dados..
+        setTimeout(function(){ $("#btnListarTodos").click(); }, 3000);
+    };
+    
+    //Chamandoo método para criar o personagem..
+    $("#btnCriarPersonagem").click(function() {
+        //Chamando a função para carregar os dados..
+        var Dados = {
+            Nome: $("#nome").val(),
+            Classe : $("#classe").val()
+        };
+
+        //Criticando o nome do personagem... ()                      
+        if (!Dados.Nome)
+        {
+            Resposta("Por favor, informe o nome do personagem.");
+            return false;
+        }
+        
+        //Chamando o método para criar e repsonder na tela..
+        Criar(Dados); Resposta(Global.dados);
+
+        //Chamando a função para carregar os dados..
+        setTimeout(function(){ $("#btnListarTodos").click(); }, 3000);
     });
 
-    //Chamando m�todo para sair do sistema..
+    //Chamando método para listar os personagens..
+    $("#btnListarTodos").click(function() {
+        //Chamando a função para carregar os dados..
+        Carregar();
+        
+        //Verificando e montando HTML..
+        (Global.dados) ? MontarHTML() : ""; //alert("Não foi possível carregar os dados.");
+    });
+
+    //Chamando método para sair do sistema..
     $("#btnSair").click(function() {
         Sair();
     });    
