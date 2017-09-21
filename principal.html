@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>API Rest</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-theme.min.css">    
+</head>
+<body class="container">
+
+<h2>Principal</h2>
+<h5>Seja bem vindo ao painel.</h5>
+<hr>
+
+<div class="row"> 
+    <div class="row" style="margin:0; padding:0; margin-top:10px;">
+        <div class="col-md-4">
+            <button name="btnListarTodos" id="btnListarTodos" class="btn btn-info">Listar Personagens</button>
+            <button name="btnSair" id="btnSair" class="btn btn-danger">Sair</button>
+        </div>
+    </div>
+    <div class="row" style="margin:0; padding:0; margin-top:10px;">
+        <div class="col-md-6">
+            <div id="resultado"></div>
+        </div>
+    </div>    
+</div>
+
+<script type="text/javascript" src="assets/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="assets/js/scripts/autenticador.js"></script>
+<script type="text/javascript" src="assets/js/scripts/personagem.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    //Verificar autentic�o..
+    Autenticado();
+
+    //Fun��o para carregar o HTML na tela..
+    MontarHTML = function() {
+        //Pegando os dados..
+        var json = Global.dados;
+
+        var html = "<ul class=\"nav nav-tabs\">";
+        for(var p = 0; p < json.length; p++)
+        { 
+            var classeLI = (!p) ? "class=\"active\"" : "";
+            html += "<li "+classeLI+" role=\"presentation\"><a href=\"#"+p+"\" role=\"tab\" data-toggle=\"tab\">"+json[p].Nickname+"</a></li>";
+        }
+        html += "</ul>";
+        html += "<div class=\"tab-content\">";
+        for(var p = 0; p < json.length; p++)
+        {
+            var classeDIV = (!p) ? " active" : "";
+            html += "<div role=\"tabpanel\" class=\"tab-pane"+classeDIV+"\" id="+p+" style='margin-top:10px;'>";
+                html += "<p>Clan: "+json[p].Clan+"</p>";
+                html += "<p>Level: "+json[p].Level+"</p>";
+                html += "<p>Classe: <img src='assets/imgs/classes/"+json[p].NumeroClasse+".bmp'></p>";
+                html += "<p><b>Status:</b>";
+                    html += "<ul>";
+                    html += "<li>For�a: "+json[p].Status.Forca+"</li>";                          
+                    html += "<li>Inteligencia: "+json[p].Status.Inteligencia+"</li>";
+                    html += "<li>Talento: "+json[p].Status.Talento+"</li>";
+                    html += "<li>Agilidade: "+json[p].Status.Agilidade+"</li>";
+                    html += "<li>Vitalidade: "+json[p].Status.Vitalidade+"</li>";
+                    html += "<li>Total: "+json[p].Status.Pontos+"</li>";
+                    html += "</u>";
+                html += "</p>";
+
+                html += "<p><b>Magias:</b>";
+                    html += "<ul>";
+                        //Tier 1
+                        html += "<li style='color:green;'><b>Tier 1</b></li>";
+                        html += "<li>";
+                            html += "<ul>";
+                            for (var t = 0; t < json[p].Tier1.length; t++)
+                            {
+                                html += "<li><b>"+json[p].Tier1[t].Nome+":</b> "+json[p].Tier1[t].Valor+"</li>";
+                            }
+                            html += "</ul>";
+                        html += "</li>";
+                        //Tier 2
+                        html += "<li style='color:green;'><b>Tier 2</b></li>";
+                        html += "<li>";
+                            html += "<ul>";
+                            for (var t = 0; t < json[p].Tier2.length; t++)
+                            {
+                                html += "<li><b>"+json[p].Tier2[t].Nome+":</b> "+json[p].Tier2[t].Valor+"</li>";
+                            }
+                            html += "</ul>";
+                        html += "</li>";
+                        //Tier 3
+                        html += "<li><li style='color:green;'><b>Tier 3</b></li></li>";
+                        html += "<li>";
+                            html += "<ul>";
+                            for (var t = 0; t < json[p].Tier3.length; t++)
+                            {
+                                html += "<li><b>"+json[p].Tier3[t].Nome+":</b> "+json[p].Tier3[t].Valor+"</li>";
+                            }
+                            html += "</ul>";
+                        html += "</li>";
+                        //Total pontos
+                        html += "<li><b>Total:</b> "+json[p].PontosRestanteSP+"</li>";
+                        
+                        //Tier 4
+                        html += "<li><li style='color:green;'><b>Tier 4</b></li></li>";
+                        html += "<li>";
+                            html += "<ul>";
+                            for (var t = 0; t < json[p].Tier4.length; t++)
+                            {
+                                html += "<li><b>"+json[p].Tier4[t].Nome+":</b> "+json[p].Tier4[t].Valor+"</li>";
+                            }
+                            html += "</ul>";
+                        html += "</li>"; 
+                        //Total pontos
+                        html += "<li><b>Total:</b> "+json[p].PontosRestanteEP+"</li>";                                    
+                    html += "</u>";
+                html += "</p>";                            
+            html += "</div>";
+        }
+        html += "</div>";
+        $("#resultado").html(html);
+    };
+
+    //Chamando m�todo para listar os personagens..
+    $("#btnListarTodos").click(function() {
+        //Chamando a fun��o para carregar os dados..
+        Carregar();
+        //Verificando e montando HTML..
+        (Global.dados) ? MontarHTML() : alert("N�o foi poss�vel carregar os dados.");
+    });
+
+    //Chamando m�todo para sair do sistema..
+    $("#btnSair").click(function() {
+        Sair();
+    });    
+});
+</script>
+</body>
+</html>

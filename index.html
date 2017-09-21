@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>API Rest</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-theme.min.css">    
+</head>
+<body class="container">
+
+<h2>Painel player</h2>
+<h5>Informe os dados de acesso.</h5>
+<hr>
+
+<div class="row"> 
+    <div class="row" style="margin:0; padding:0;">
+        <div class="col-md-4">
+            <label>Usu�rio</label>
+            <input type="text" name="usuario" id="usuario" class="form-control" />
+        </div>
+    </div>
+    <div class="row" style="margin:0; padding:0; margin-top:10px;">
+        <div class="col-md-4">
+            <label>Senha</label>
+            <input type="password" name="senha" id="senha" class="form-control" />
+        </div>
+    </div>
+    <div class="row" style="margin:0; padding:0; margin-top:10px;">
+        <div class="col-md-4">
+            <button name="btnAcessar" id="btnAcessar" class="btn btn-success">Acessar</button>
+        </div>
+    </div>
+    <div class="row" style="margin:0; padding:0; margin-top:10px;">
+        <div class="col-md-6">
+            <div id="resultado"></div>
+        </div>
+    </div>    
+</div>
+
+<script type="text/javascript" src="assets/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="assets/js/scripts/autenticador.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    //Acessando o sistema..
+    $("#btnAcessar").click(function() {
+        //Limpando div..
+        $("#resultado").html("");
+
+        //Verificando se o token j� foi gerado..
+        if (!Global.token) {
+            //Autenticando usu�rio e gerando token..
+            Autenticar({
+                url: Global.urlBase + "/usuario/acessar", 
+                usuario: $("#usuario").val(), 
+                senha: $("#senha").val()
+            });
+        } else {
+            location.href="principal.html";
+        }
+    });
+});
+</script>
+</body>
+</html>
